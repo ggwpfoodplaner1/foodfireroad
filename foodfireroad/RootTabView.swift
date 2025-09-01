@@ -2,63 +2,45 @@ import SwiftUI
 
 struct RootTabView: View {
     enum Tab: Hashable {
-        case diary, recipes, burn, stats
+        case diary, recipes, burn, stats, settings
     }
 
     @EnvironmentObject var appState: AppState
     @State private var selection: Tab = .diary
-    @State private var showingSettings = false
 
     var body: some View {
         TabView(selection: $selection) {
 
             // Diary
             DiaryScreen()
-                .tabItem {
-                    Label("Diary", systemImage: "fork.knife")
-                }
+                .tabItem { Label("Diary", systemImage: "fork.knife") }
                 .tag(Tab.diary)
 
             // Recipes
             RecipesScreen()
-                .tabItem {
-                    Label("Recipes", systemImage: "book")
-                }
+                .tabItem { Label("Recipes", systemImage: "book") }
                 .tag(Tab.recipes)
 
             // Burn
             BurnScreen()
-                .tabItem {
-                    Label("Burn", systemImage: "flame")
-                }
+                .tabItem { Label("Burn", systemImage: "flame") }
                 .tag(Tab.burn)
 
             // Stats
             StatsScreen()
-                .tabItem {
-                    Label("Statistics", systemImage: "chart.bar")
-                }
+                .tabItem { Label("Statistics", systemImage: "chart.bar") }
                 .tag(Tab.stats)
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showingSettings = true
-                } label: {
-                    Image(systemName: "gearshape")
-                }
-                .accessibilityLabel("Settings")
-            }
-        }
-        .sheet(isPresented: $showingSettings) {
-            SettingsSheet()
+
+            // Settings (moved from sheet to tab)
+            SettingsView()
                 .environmentObject(appState)
+                .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tag(Tab.settings)
         }
     }
 }
 
 // MARK: - Previews
-
 #Preview {
     RootTabView()
         .environmentObject(AppState())

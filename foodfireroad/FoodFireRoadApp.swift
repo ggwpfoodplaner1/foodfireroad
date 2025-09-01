@@ -22,6 +22,8 @@ struct FoodFireRoadApp: App {
             TabSettingsView{
                 RootTabView()
                     .environmentObject(appState)
+                    .preferredColorScheme(appState.themeMode.colorScheme) // ← применяем тему
+
                     .onAppear {
                         appState.loadFromDisk()
                     }

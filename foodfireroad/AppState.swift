@@ -7,6 +7,21 @@ class AppState: ObservableObject {
     @Published var activities: [Activity] = []
     @Published var settings: Settings = Settings(dailyKcalGoal: 2000, unitSystem: .metric)
 
+    // Тема приложения
+    @Published var themeMode: ThemeMode = .system {
+        didSet { saveThemeMode(themeMode) }
+    }
+
+    private let themeKey = "ffr.themeMode"
+
+    init() {
+        // Загрузка сохранённой темы (если есть)
+        if let raw = UserDefaults.standard.string(forKey: themeKey),
+           let mode = ThemeMode(rawValue: raw) {
+            themeMode = mode
+        }
+    }
+
     // Методы для работы с приёмами пищи
     func addMeal(_ meal: Meal) {
         meals.append(meal)
@@ -51,6 +66,7 @@ class AppState: ObservableObject {
     func deleteActivity(_ activity: Activity) {
         activities.removeAll { $0.id == activity.id }
     }
+
     // MARK: - Seeding
     /// Seed sample healthy recipes on first launch (only if recipes are empty)
     func seedSampleDataIfNeeded() {
@@ -136,5 +152,10 @@ class AppState: ObservableObject {
         )
 
         recipes = [r1, r2, r3, r4, r5]
+    }
+
+    // MARK: - Private
+    private func saveThemeMode(_ mode: ThemeMode) {
+        UserDefaults.standard.set(mode.rawValue, forKey: themeKey)
     }
 }
